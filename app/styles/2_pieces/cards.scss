@@ -1,0 +1,15 @@
+.card {
+  padding: 37px 0;
+  width: 75px;
+  margin: 5px;
+  text-align: center;
+  border: 1px solid grey;
+  display: inline-block;
+  border-radius: 3px;
+  &.spade, &.club {
+    color: black;
+  }
+  &.heart, &.diamond {
+    color: red;
+  }
+}
