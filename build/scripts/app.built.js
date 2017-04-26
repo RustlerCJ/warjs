@@ -9,36 +9,8 @@
 	}
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// install a JSONP callback for chunk loading
-/******/ 	var parentJsonpFunction = window["webpackJsonp"];
-/******/ 	window["webpackJsonp"] = function webpackJsonpCallback(chunkIds, moreModules) {
-/******/ 		// add "moreModules" to the modules object,
-/******/ 		// then flag all "chunkIds" as loaded and fire callback
-/******/ 		var moduleId, chunkId, i = 0, callbacks = [];
-/******/ 		for(;i < chunkIds.length; i++) {
-/******/ 			chunkId = chunkIds[i];
-/******/ 			if(installedChunks[chunkId])
-/******/ 				callbacks.push.apply(callbacks, installedChunks[chunkId]);
-/******/ 			installedChunks[chunkId] = 0;
-/******/ 		}
-/******/ 		for(moduleId in moreModules) {
-/******/ 			modules[moduleId] = moreModules[moduleId];
-/******/ 		}
-/******/ 		if(parentJsonpFunction) parentJsonpFunction(chunkIds, moreModules);
-/******/ 		while(callbacks.length)
-/******/ 			callbacks.shift().call(null, __webpack_require__);
-/******/
-/******/ 	};
-/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-/******/
-/******/ 	// object to store loaded and loading chunks
-/******/ 	// "0" means "already loaded"
-/******/ 	// Array means "loading", array contains callbacks
-/******/ 	var installedChunks = {
-/******/ 		0:0
-/******/ 	};
 /******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -64,29 +36,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		return module.exports;
 /******/ 	}
 /******/
-/******/ 	// This file contains only the entry chunk.
-/******/ 	// The chunk loading function for additional chunks
-/******/ 	__webpack_require__.e = function requireEnsure(chunkId, callback) {
-/******/ 		// "0" is the signal for "already loaded"
-/******/ 		if(installedChunks[chunkId] === 0)
-/******/ 			return callback.call(null, __webpack_require__);
-/******/
-/******/ 		// an array means "currently loading".
-/******/ 		if(installedChunks[chunkId] !== undefined) {
-/******/ 			installedChunks[chunkId].push(callback);
-/******/ 		} else {
-/******/ 			// start chunk loading
-/******/ 			installedChunks[chunkId] = [callback];
-/******/ 			var head = document.getElementsByTagName('head')[0];
-/******/ 			var script = document.createElement('script');
-/******/ 			script.type = 'text/javascript';
-/******/ 			script.charset = 'utf-8';
-/******/ 			script.async = true;
-/******/
-/******/ 			script.src = __webpack_require__.p + "" + ({}[chunkId]||chunkId) + ".bundle.js";
-/******/ 			head.appendChild(script);
-/******/ 		}
-/******/ 	};
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
@@ -9950,9 +9899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  modules: {
-	    populateDeck: __webpack_require__(3),
-	    sampleModule: __webpack_require__(5),
-	    shuffleDeck: __webpack_require__(7)
+	    populateDeck: __webpack_require__(3)
 	  }
 	
 	};
@@ -9973,6 +9920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/*global console*/
 	'use strict';
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -9993,7 +9941,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'method',
 	    value: function method($element) {
 	
-	      var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+	      var ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 	      var suits = {
 	        spade: '♠',
 	        heart: '♥',
@@ -10024,73 +9972,111 @@ return /******/ (function(modules) { // webpackBootstrap
 	          a[j] = x;
 	        }
 	      }
+	
 	      shuffle(deck);
 	
-	      for (var card in deck) {
-	        $element.append('<div class="card ' + deck[card].suit + '">' + deck[card].rank + ' ' + deck[card].symbol + '</div>');
+	      function warPlayer(hand, stash) {
+	        this.hand = hand;
+	        this.stash = stash;
 	      }
+	      var playerOneHand = deck;
+	      var playerTwoHand = playerOneHand.splice(0, Math.ceil(playerOneHand.length / 2));
+	      var playerOneStash = [];
+	      var playerTwoStash = [];
+	      var playerOne = new warPlayer(playerOneHand, playerOneStash);
+	      var playerTwo = new warPlayer(playerTwoHand, playerTwoStash);
+	      var warPile = [];
+	      var handWinner;
+	
+	      function playWar() {
+	
+	        if (playerOne.hand[0].rank > playerTwo.hand[0].rank) {
+	          handWinner = playerOne;
+	        } else if (playerOne.hand[0].rank < playerTwo.hand[0].rank) {
+	          handWinner = playerTwo;
+	        } else {
+	          console.log('war');
+	          console.log('p1 ' + playerOne.hand.length + ' ' + playerOne.stash.length);
+	          console.log('p2 ' + playerTwo.hand.length + ' ' + playerTwo.stash.length);
+	
+	          for (var i = 0; i <= 3; i++) {
+	            warPile.push(playerOne.hand[0]);
+	            warPile.push(playerTwo.hand[0]);
+	            playerOne.hand.shift();
+	            playerTwo.hand.shift();
+	          }
+	          var warWinner = playWar();
+	          if (warWinner == playerOne) {
+	            for (var i = 0; i < warPile.length; i++) {
+	              playerOne.stash.push(warPile[i]);
+	            }
+	            console.log('p1 ' + playerOne.hand.length + ' ' + playerOne.stash.length);
+	          } else {
+	            for (var i = 0; i < warPile.length; i++) {
+	              playerTwo.stash.push(warPile[i]);
+	            }
+	            console.log('p2 ' + playerTwo.hand.length + ' ' + playerTwo.stash.length);
+	          }
+	          return;
+	        }
+	
+	        if (handWinner == playerOne) {
+	          playerOne.stash.push(playerOne.hand[0]);
+	          playerOne.stash.push(playerTwo.hand[0]);
+	          console.log('p1 ' + playerOne.hand.length + ' ' + playerOne.stash.length);
+	        } else {
+	          playerTwo.stash.push(playerOne.hand[0]);
+	          playerTwo.stash.push(playerTwo.hand[0]);
+	          console.log('p2 ' + playerTwo.hand.length + ' ' + playerTwo.stash.length);
+	        }
+	
+	        if (playerOne.hand.length == 1) {
+	          shuffle(playerOne.stash);
+	          for (var card in playerOne.stash) {
+	            playerOne.hand.push(playerOne.stash[card]);
+	          }
+	          playerOne.stash.length = 0;
+	        }
+	        if (playerTwo.hand.length == 1) {
+	          shuffle(playerTwo.stash);
+	          for (var card in playerTwo.stash) {
+	            playerTwo.hand.push(playerTwo.stash[card]);
+	          }
+	          playerTwo.stash.length = 0;
+	        }
+	
+	        playerOne.hand.shift();
+	        playerTwo.hand.shift();
+	
+	        if (playerOne.hand.length == 0) {
+	          console.log('player two wins');
+	        }
+	        if (playerTwo.hand.length == 0) {
+	          console.log('player one wins');
+	        }
+	
+	        return handWinner;
+	      }
+	
+	      $('body, html').on('click', function () {
+	        playWar();
+	      });
+	
+	      // for (var card in deck) {
+	      //   $element.append( '<div class="card '+deck[card].suit+'">'+deck[card].rank+' '+deck[card].symbol+'</div>' );
+	      // }
+	
+	      // for (var card in playerOne) {
+	      //   $element.append( '<div class="card '+playerOne[card].suit+'">'+playerOne[card].rank+' '+playerOne[card].symbol+'</div>' );
+	      // }
+	      // $element.append('<br /> <hr /> <br />');
+	      // for (var card in playerTwo) {
+	      //   $element.append( '<div class="card '+playerTwo[card].suit+'">'+playerTwo[card].rank+' '+playerTwo[card].symbol+'</div>' );
+	      // }
 	    }
 	  }]);
 	
 	  return PopulateDeck;
-	}();
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	module.exports = function ($el) {
-	
-	  __webpack_require__.e/* nsure */(1, function (require) {
-	
-	    var Module = __webpack_require__(6);
-	    new Module($el);
-	  });
-	};
-
-/***/ },
-/* 6 */,
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	module.exports = function ($el) {
-	
-	  var Module = __webpack_require__(8);
-	  new Module($el);
-	};
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var $ = __webpack_require__(1);
-	
-	module.exports = function () {
-	  function ShuffleDeck($el) {
-	    _classCallCheck(this, ShuffleDeck);
-	
-	    this.$el = $el;
-	    this.method(this.$el);
-	  }
-	
-	  _createClass(ShuffleDeck, [{
-	    key: 'method',
-	    value: function method($element) {
-	      console.log($element);
-	    }
-	  }]);
-	
-	  return ShuffleDeck;
 	}();
 
 /***/ }

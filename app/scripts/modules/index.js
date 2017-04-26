@@ -10,8 +10,6 @@ module.exports = {
   },
   modules: {
     populateDeck: require('./populateDeck/populateDeck.load'),
-    sampleModule: require('./sampleModule/sampleModule.load'),
-    shuffleDeck: require('./shuffleDeck/shuffleDeck.load')
   }
 
 };
