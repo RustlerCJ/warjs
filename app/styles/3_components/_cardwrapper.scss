@@ -1,0 +1,114 @@
+.cardwrapper {
+  text-align: center;
+  padding: 30px;
+  .playerTwo.live {
+    margin: 20px 5px 75px;
+    vertical-align: top;
+    z-index: 10;
+  }
+  .playerOne.live {
+    margin: 75px 5px 20px;
+    vertical-align: bottom;
+    z-index: 10;
+  }
+  .stack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    &:before, &:after {
+      content: '';
+      height: 100px;
+      width: 75px;
+      border: 1px solid grey;
+      border-radius: 5px;
+      background-color: #fff;
+      position: absolute;
+      top: 4px;
+      left: -1px;
+      z-index: -2;
+    }
+    &:after {
+      top: 9px;
+      z-index: -1;
+    }
+    &.playerOne {
+      top: auto;
+      bottom: 0;
+      &:before {
+        top: auto;
+        bottom: 4px;
+      }
+      &:after {
+        top: auto;
+        bottom: 9px;
+      }
+    }
+  }
+}
+
+.button {
+  display: block;
+  margin: 5px;
+  text-align: center;
+  border: 1px solid grey;
+  display: inline-block;
+  border-radius: 3px;
+  position: relative;
+  padding: 15px;
+  text-transform: uppercase;
+  background-color: #fff;
+
+  color: #1b5886;
+  font-size: 14px;
+  line-height: 1.1;
+
+  span {
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  &:after{
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: #b8d5ec;
+  }
+}
+
+.winAlert {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: translate(0, -50%);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+.battlefield {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+}
+.row {
+  position: relative;
+}
+
+html, body {
+  background-color: #277714;
+  min-height: 100%;
+}
+
+.directions {
+  display: block;
+  opacity: 0.6;
+  font-size: 14px;
+  color: #fff;
+}

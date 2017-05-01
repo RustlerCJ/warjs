@@ -1541,12 +1541,9 @@ p {
  * that should not display their text, ex. a icon button.
  */
 .hidden {
-  height: 1px;
-  left: -10000px;
-  overflow: hidden;
-  position: absolute;
-  top: auto;
-  width: 1px; }
+  left: -10000px !important;
+  overflow: hidden !important;
+  top: auto !important; }
 
 /* Note: This mixin adds top and bottom margins to elements.
  * This maintain a consistent layout from breakpoint to breakpoint and a singular place to update.
@@ -1780,17 +1777,158 @@ strong {
   background-color: gray; }
 
 .card {
-  padding: 37px 0;
+  height: 100px;
   width: 75px;
   margin: 5px;
   text-align: center;
   border: 1px solid grey;
   display: inline-block;
-  border-radius: 3px; }
-  .card.spade, .card.club {
+  border-radius: 5px;
+  position: relative;
+  background-color: #fff; }
+  .card .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 1;
+    top: 50%;
+    -webkit-transform: translate(0, -50%);
+        -ms-transform: translate(0, -50%);
+            transform: translate(0, -50%);
+    z-index: 10; }
+    .card .content span {
+      display: block;
+      padding-bottom: 20px;
+      text-align: left; }
+      .card .content span.upsidedown {
+        -webkit-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+                transform: rotate(180deg); }
+  .card .spade, .card .club {
     color: black; }
-  .card.heart, .card.diamond {
+  .card .heart, .card .diamond {
     color: red; }
+  .card.stash .content, .card.hand .content {
+    color: #1b5886;
+    font-size: 14px;
+    line-height: 1.1; }
+  .card.stash:after, .card.hand:after {
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: #b8d5ec; }
+  .card.stash.playerTwo .content, .card.hand.playerTwo .content {
+    color: #861b1b; }
+  .card.stash.playerTwo:after, .card.hand.playerTwo:after {
+    background-color: #ecb8b8; }
+
+.cardwrapper {
+  text-align: center;
+  padding: 30px; }
+  .cardwrapper .playerTwo.live {
+    margin: 20px 5px 75px;
+    vertical-align: top;
+    z-index: 10; }
+  .cardwrapper .playerOne.live {
+    margin: 75px 5px 20px;
+    vertical-align: bottom;
+    z-index: 10; }
+  .cardwrapper .stack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2; }
+    .cardwrapper .stack:before, .cardwrapper .stack:after {
+      content: '';
+      height: 100px;
+      width: 75px;
+      border: 1px solid grey;
+      border-radius: 5px;
+      background-color: #fff;
+      position: absolute;
+      top: 4px;
+      left: -1px;
+      z-index: -2; }
+    .cardwrapper .stack:after {
+      top: 9px;
+      z-index: -1; }
+    .cardwrapper .stack.playerOne {
+      top: auto;
+      bottom: 0; }
+      .cardwrapper .stack.playerOne:before {
+        top: auto;
+        bottom: 4px; }
+      .cardwrapper .stack.playerOne:after {
+        top: auto;
+        bottom: 9px; }
+
+.button {
+  display: block;
+  margin: 5px;
+  text-align: center;
+  border: 1px solid grey;
+  display: inline-block;
+  border-radius: 3px;
+  position: relative;
+  padding: 15px;
+  text-transform: uppercase;
+  background-color: #fff;
+  color: #1b5886;
+  font-size: 14px;
+  line-height: 1.1; }
+  .button span {
+    position: relative;
+    z-index: 10;
+    pointer-events: none; }
+  .button:after {
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: #b8d5ec; }
+
+.winAlert {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  -webkit-transform: translate(0, -50%);
+      -ms-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 18px; }
+
+.battlefield {
+  display: inline-block;
+  position: relative;
+  vertical-align: top; }
+
+.row {
+  position: relative; }
+
+html, body {
+  background-color: #277714;
+  min-height: 100%; }
+
+.directions {
+  display: block;
+  opacity: 0.6;
+  font-size: 14px;
+  color: #fff; }
 
 .example.card-container {
   padding: 10px; }

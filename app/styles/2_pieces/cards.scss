@@ -1,15 +1,78 @@
 .card {
-  padding: 37px 0;
+  height: 100px;
   width: 75px;
   margin: 5px;
   text-align: center;
   border: 1px solid grey;
   display: inline-block;
-  border-radius: 3px;
-  &.spade, &.club {
+  border-radius: 5px;
+  position: relative;
+  background-color: #fff;
+
+
+
+
+  .content{
+    position: absolute;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 1;
+
+
+    top: 50%;
+    transform: translate( 0, -50% );
+
+    z-index: 10;
+
+    span {
+      display: block;
+      padding-bottom: 20px;
+      text-align: left;
+      &.upsidedown {
+        transform: rotate(180deg);
+      }
+    }
+
+  }
+
+  .spade, .club {
     color: black;
   }
-  &.heart, &.diamond {
+  .heart, .diamond {
     color: red;
   }
+
+  &.stash, &.hand {
+    .content {
+      color: #1b5886;
+      font-size: 14px;
+      line-height: 1.1;
+    }
+    &:after{
+      content: '';
+      z-index: 1;
+      position: absolute;
+      top: 5px;
+      bottom: 5px;
+      left: 5px;
+      right: 5px;
+      background-color: #b8d5ec;
+    }
+    &.playerTwo {
+      .content {
+        color: #861b1b;
+      }
+      &:after{
+        background-color: #ecb8b8;
+      }
+    }
+  }
+
+
+
 }

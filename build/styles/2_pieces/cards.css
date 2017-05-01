@@ -1,12 +1,54 @@
 .card {
-  padding: 37px 0;
+  height: 100px;
   width: 75px;
   margin: 5px;
   text-align: center;
   border: 1px solid grey;
   display: inline-block;
-  border-radius: 3px; }
-  .card.spade, .card.club {
+  border-radius: 5px;
+  position: relative;
+  background-color: #fff; }
+  .card .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 1;
+    top: 50%;
+    -webkit-transform: translate(0, -50%);
+        -ms-transform: translate(0, -50%);
+            transform: translate(0, -50%);
+    z-index: 10; }
+    .card .content span {
+      display: block;
+      padding-bottom: 20px;
+      text-align: left; }
+      .card .content span.upsidedown {
+        -webkit-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+                transform: rotate(180deg); }
+  .card .spade, .card .club {
     color: black; }
-  .card.heart, .card.diamond {
+  .card .heart, .card .diamond {
     color: red; }
+  .card.stash .content, .card.hand .content {
+    color: #1b5886;
+    font-size: 14px;
+    line-height: 1.1; }
+  .card.stash:after, .card.hand:after {
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: #b8d5ec; }
+  .card.stash.playerTwo .content, .card.hand.playerTwo .content {
+    color: #861b1b; }
+  .card.stash.playerTwo:after, .card.hand.playerTwo:after {
+    background-color: #ecb8b8; }

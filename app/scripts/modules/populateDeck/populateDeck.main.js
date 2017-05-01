@@ -17,17 +17,21 @@ module.exports = class PopulateDeck{
       club: '♣'
     };
 
-    function Card(suit, symbol, rank) {
+    function Card(suit, symbol, rank, value) {
       this.suit = suit;
       this.symbol = symbol;
       this.rank = rank;
+      this.value = value;
     }
 
     var deck = [];
+    var value = 1;
 
     for (var suit in suits) {
+      value = 1;
       for (var rank in ranks) {
-        deck.push(new Card(suit, suits[suit], ranks[rank] ));
+        value++;
+        deck.push(new Card(suit, suits[suit], ranks[rank], value ));
       }
     }
 
@@ -41,128 +45,208 @@ module.exports = class PopulateDeck{
       }
     }
 
+
     shuffle(deck);
 
 
 
 
-    function warPlayer(hand, stash){
+    function warPlayer(name, hand, stash){
+      this.name = name;
       this.hand = hand;
       this.stash = stash;
     }
-    var playerOneHand = deck;
+
+    var playerOneHand = [];
+    for(var card in deck) {
+      playerOneHand.push(deck[card]);
+    }
+
     var playerTwoHand = playerOneHand.splice(0, Math.ceil(playerOneHand.length / 2));
     var playerOneStash = [];
     var playerTwoStash = [];
-    var playerOne = new warPlayer(playerOneHand, playerOneStash);
-    var playerTwo = new warPlayer(playerTwoHand, playerTwoStash);
+    var playerOne = new warPlayer('blue', playerOneHand, playerOneStash);
+    var playerTwo = new warPlayer('red', playerTwoHand, playerTwoStash);
     var warPile = [];
     var handWinner;
 
-    function playWar(){
 
-      if( playerOne.hand[0].rank > playerTwo.hand[0].rank ) {
+    function minHandSize(player, num){
+      if (player.hand.length >= num) {
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function checkLoss(player) {
+      if (player.stash.length === 0 && player.hand.length === 0) {
+        $('.live').addClass('hidden');
+        $('.stack').addClass('hidden');
+        $('.winAlert').removeClass('hidden');
+        $('.winAlert').html('game over!<br />'+player.name+' loses')
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function updateStacks(){
+      $('.playerOne.hand').html('<span class="content">hand<br />'+(playerOne.hand.length-1)+'</span>');
+      $('.playerTwo.hand').html('<span class="content">hand<br />'+(playerTwo.hand.length-1)+'</span>');
+      $('.playerOne.stash').html('<span class="content">stash<br />'+playerOne.stash.length+'</span>');
+      $('.playerTwo.stash').html('<span class="content">stash<br />'+playerTwo.stash.length+'</span>');
+    }
+
+    function updateBattlefield(){
+      $('.playerTwo.live .content').html('<span class=" '+playerTwo.hand[0].suit+'">'+playerTwo.hand[0].rank+' '+playerTwo.hand[0].symbol+'</span><span class=" upsidedown '+playerTwo.hand[0].suit+'">'+playerTwo.hand[0].rank+' '+playerTwo.hand[0].symbol+'</span>');
+      $('.playerOne.live .content').html('<span class=" '+playerOne.hand[0].suit+'">'+playerOne.hand[0].rank+' '+playerOne.hand[0].symbol+'</span><span class=" upsidedown '+playerOne.hand[0].suit+'">'+playerOne.hand[0].rank+' '+playerOne.hand[0].symbol+'</span>');
+    }
+
+    function restartGame(){
+      $('.winAlert').addClass('hidden');
+      $('.live').addClass('hidden');
+      $('.stack').addClass('hidden');
+      shuffle(deck);
+      playerOne.hand.length = 0;
+      playerTwo.hand.length = 0;
+      for(var card in deck) {
+        playerOne.hand.push(deck[card]);
+      }
+      playerTwo.hand = playerOne.hand.splice(0, Math.ceil(playerOne.hand.length / 2));
+      playerOne.stash.length = 0;
+      playerTwo.stash.length = 0;
+    }
+
+    function standardAction(){
+      $('.draw').on('click', function(e){
+        e.preventDefault();
+        $('.live').removeClass('hidden');
+        warTurn();
+        if ( !$('.stack').hasClass('hidden') ) {
+          $('.stack').addClass('hidden');
+        }
+      });
+      $(window).on('keypress', function(e){
+        e.preventDefault();
+        $('.live').removeClass('hidden');
+        warTurn();
+        if ( !$('.stack').hasClass('hidden') ) {
+          $('.stack').addClass('hidden');
+        }
+      });
+    }
+
+    function addStash(player) {
+      shuffle(player.stash);
+      if (player.stash.length === 0) {
+        checkLoss(player);
+        // $('.live').addClass('hidden');
+        // $('.stack').addClass('hidden');
+        // $('.winAlert').removeClass('hidden');
+        // $('.winAlert').html('game over!<br />'+player.name+' loses')
+        return;
+      } else {
+        for(var card in player.stash) {
+          player.hand.push(player.stash[card]);
+        }
+        player.stash.length = 0;
+      }
+    }
+
+    function continueBattle(){
+      if( !minHandSize(playerOne, 4) ){
+        addStash(playerOne);
+      }
+      if( !minHandSize(playerTwo, 4) ){
+        addStash(playerTwo);
+      }
+      for(var i = 0; i <= 3; i++ ){
+        warPile.push(playerOne.hand[0]);
+        warPile.push(playerTwo.hand[0]);
+        playerOne.hand.shift();
+        playerTwo.hand.shift();
+      }
+
+      var warWinner = warTurn();
+      if (warWinner == playerOne) {
+        for (var i = 0; i < warPile.length; i++) {
+          playerOne.stash.push(warPile[i]);
+        }
+      } else {
+        for (var i = 0; i < warPile.length; i++) {
+          playerTwo.stash.push(warPile[i]);
+        }
+      }
+      warPile.length = 0;
+      $('.stack').removeClass('hidden');
+
+    }
+
+    function battle(){
+      updateBattlefield();
+
+      $('.draw').off();
+      $(window).off();
+
+      $('.draw').on('click', function(e){
+        e.preventDefault();
+        continueBattle();
+        $('.draw').off();
+        $(window).off();
+        standardAction();
+      });
+
+      $(window).on('keypress', function(e){
+        e.preventDefault();
+        continueBattle();
+        $('.draw').off();
+        $(window).off();
+        standardAction();
+      });
+    }
+
+    function warTurn(){
+
+      if( !minHandSize(playerOne, 1) ){
+        addStash(playerOne);
+      }
+      if( !minHandSize(playerTwo, 1) ){
+        addStash(playerTwo);
+      }
+      if( playerOne.hand[0].value > playerTwo.hand[0].value ) {
         handWinner = playerOne;
-      } else if ( playerOne.hand[0].rank < playerTwo.hand[0].rank ) {
+      } else if ( playerOne.hand[0].value < playerTwo.hand[0].value ) {
         handWinner = playerTwo;
       } else {
-        console.log('war');
-        console.log('p1 '+playerOne.hand.length+' '+playerOne.stash.length);
-        console.log('p2 '+playerTwo.hand.length+' '+playerTwo.stash.length);
-
-        for(var i = 0; i <= 3; i++ ){
-          warPile.push(playerOne.hand[0]);
-          warPile.push(playerTwo.hand[0]);
-          playerOne.hand.shift();
-          playerTwo.hand.shift();
-        }
-        var warWinner = playWar();
-        if (warWinner == playerOne) {
-          for (var i = 0; i < warPile.length; i++) {
-            playerOne.stash.push(warPile[i]);
-          }
-          console.log('p1 '+playerOne.hand.length+' '+playerOne.stash.length);
-        } else {
-          for (var i = 0; i < warPile.length; i++) {
-            playerTwo.stash.push(warPile[i]);
-          }
-          console.log('p2 '+playerTwo.hand.length+' '+playerTwo.stash.length);
-        }
+        battle();
         return;
       }
 
-      if (handWinner == playerOne) {
-        playerOne.stash.push(playerOne.hand[0]);
-        playerOne.stash.push(playerTwo.hand[0]);
-        console.log('p1 '+playerOne.hand.length+' '+playerOne.stash.length);
-      } else {
-        playerTwo.stash.push(playerOne.hand[0]);
-        playerTwo.stash.push(playerTwo.hand[0]);
-        console.log('p2 '+playerTwo.hand.length+' '+playerTwo.stash.length);
-      }
+      console.log('r:'+playerTwo.hand[0].rank+'['+playerTwo.hand[0].value+'] vs b:'+playerOne.hand[0].rank+'['+playerOne.hand[0].value+'] = '+handWinner.name);
 
-      if(playerOne.hand.length == 1){
-        shuffle(playerOne.stash);
-        for(var card in playerOne.stash) {
-          playerOne.hand.push(playerOne.stash[card]);
-        }
-        playerOne.stash.length = 0;
-      }
-      if(playerTwo.hand.length == 1){
-        shuffle(playerTwo.stash);
-        for(var card in playerTwo.stash) {
-          playerTwo.hand.push(playerTwo.stash[card]);
-        }
-        playerTwo.stash.length = 0;
-      }
+      updateBattlefield();
+      updateStacks();
 
+      handWinner.stash.push(playerOne.hand[0]);
+      handWinner.stash.push(playerTwo.hand[0]);
       playerOne.hand.shift();
       playerTwo.hand.shift();
-
-      if(playerOne.hand.length == 0){
-        console.log('player two wins');
-      }
-      if(playerTwo.hand.length == 0){
-        console.log('player one wins');
-      }
-
       return handWinner;
     }
 
+    $('.playerOne.hand').html('<span class="content">hand<br />'+playerOne.hand.length+'</span>');
+    $('.playerTwo.hand').html('<span class="content">hand<br />'+playerTwo.hand.length+'</span>');
+    $('.playerOne.stash').html('<span class="content">stash<br />'+playerOne.stash.length+'</span>');
+    $('.playerTwo.stash').html('<span class="content">stash<br />'+playerTwo.stash.length+'</span>');
 
+    standardAction();
 
-    $('body, html').on('click', function(){
-      playWar();
+    $('.restart').on('click', function(e){
+      e.preventDefault();
+      restartGame();
     });
 
-
-
-
-
-
-
-
-    // for (var card in deck) {
-    //   $element.append( '<div class="card '+deck[card].suit+'">'+deck[card].rank+' '+deck[card].symbol+'</div>' );
-    // }
-
-    // for (var card in playerOne) {
-    //   $element.append( '<div class="card '+playerOne[card].suit+'">'+playerOne[card].rank+' '+playerOne[card].symbol+'</div>' );
-    // }
-    // $element.append('<br /> <hr /> <br />');
-    // for (var card in playerTwo) {
-    //   $element.append( '<div class="card '+playerTwo[card].suit+'">'+playerTwo[card].rank+' '+playerTwo[card].symbol+'</div>' );
-    // }
-
   }
-
-
-
-
-
-
-
-
-
-
 };

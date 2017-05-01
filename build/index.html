@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Genuine - UI Templates</title>
+  <title>Play War</title>
 
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,59 @@
   </section>
 </header>
 
-    <section class="wrapper" data-module="populateDeck">
+  
+  <section class="wrapper" data-module="populateDeck">
+
+    <!-- <div class="cardwrapper">
+      <a href="#" class="button draw">draw</a>
+      <div class="cardcontainer">
+        <div id="playerOne" class="card name"></div>
+        <div class="cards"></div>
+        <div id="playerTwo" class="card name"></div>
+      </div>
+    </div> -->
+    <div class="cardwrapper">
+
+      <div class="cardcontainer">
+        <div class="row">
+          <div class="playerTwo hand card"></div>
+          <div class="playerTwo stash card"></div>
+        </div>
+
+        <div class="row">
+          <div class="playerTwo battlefield">
+            <div class="playerTwo live card hidden">
+              <div class="content">
+                &nbsp;
+              </div>
+            </div>
+            <div class="playerTwo card stack hidden"></div>
+          </div>
+
+          <div class="playerOne battlefield">
+            <div class="playerOne live card hidden">
+              <div class="content">
+                &nbsp;
+              </div>
+            </div>
+            <div class="playerOne card stack hidden"></div>
+          </div>
+
+          <div class="winAlert hidden"><span></span></div>
+        </div>
+
+        <div class="row">
+          <div class="playerOne stash card"></div>
+          <div class="playerOne hand card"></div>
+        </div>
+
+      </div>
+
+
+      <a href="#" class="button restart"><span>restart</span></a>
+      <a href="#" class="button draw"><span>contest</span></a>
+      <span class="directions">[or press any key to contest]</span>
+    </div>
 
   </section>
 
