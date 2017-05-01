@@ -25,8 +25,8 @@ module.exports = {
 		dest: dest
 	},
 	fonts: {
-		src: src + '/fonts/**',
-		dest: dest + '/fonts'
+		src: src + 'fonts/**',
+		dest: dest + 'fonts'
 	},
 	images: {
 		src: src + '/images/**',
@@ -55,7 +55,7 @@ module.exports = {
 				evaluate: true,
 				if_return: true,
 				join_vars: true,
-				drop_console: true,
+				drop_console: false,
 				global_defs: {
 					DEBUG: false
 				}

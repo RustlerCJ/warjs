@@ -39,7 +39,7 @@
     }
 }
 
-@include font-face($name: 'Roboto', $path: '/fonts/roboto/roboto-regular', $weight: 400, $style: normal);
+@include font-face($name: 'Roboto', $path: '../fonts/roboto/roboto-regular', $weight: 400, $style: normal);
 
 $fallbackSans: Helvetica, Arial, sans-serif;
 $sans: 'Roboto', $fallbackSans;
